@@ -32,14 +32,14 @@ if __name__ == '__main__':
     print(f'\n{len(saved_songs)} Saved Songs in My Library')
 
     # Calculate duration of saved songs
-    duration_lst = [tup[3] for tup in saved_songs]
+    duration_lst = [dct['track']['duration_ms'] for dct in saved_songs if dct['track']['duration_ms'] != 0]
     duration_ms = sum(duration_lst)
     duration_hrs = duration_ms * (1/3600000)
     print(f'Total Duration of Saved Songs: {round(duration_hrs, 4)} hours')
 
     # Calculate most common artists in saved songs
     print('The 10 Most Common Artists in Saved Songs:\t')
-    artists_frequency = Counter([tup[1] for tup in saved_songs])
+    artists_frequency = Counter([dct['track']['artists'][0]['name'] for dct in saved_songs])
     sorted_freqs = artists_frequency.most_common(10)
     for i in range(10):
         print(sorted_freqs[i][0])
@@ -55,9 +55,14 @@ if __name__ == '__main__':
     shortest_song = [i for i, item in enumerate(duration_lst) if item == min(duration_lst)]
     print(f'At {round((max(duration_lst)*(1/60000)), 4)} minutes, the longest song(s) in saved songs:')
     for i in longest_song:
-        print(saved_songs[i][0], 'by', saved_songs[i][1])
-    print(f'At {round((min(duration_lst)*(1/60000)), 4)} minutes, the shortest song(s) in saved songs:')
+        song_info = saved_songs[i]['track']
+        print(song_info['name'], 'by', song_info['artists'][0]['name'])
+    print(f'\nAt {round((min(duration_lst)*(1/60000)), 4)} minutes, the shortest song(s) in saved songs:')
     for i in shortest_song:
-        print(saved_songs[i][0], 'by', saved_songs[i][1])
+        song_info = saved_songs[i]['track']
+        print(song_info['name'], 'by', song_info['artists'][0]['name'])
+        
+    # Visualize the number of songs added each year to my saved songs
+    # Bar chart, each bar having multiple colors to signify genre
 
 
