@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from spotifyAPI import spotifyAPI
+from datetime import datetime
 from collections import Counter
 from wordcloud import WordCloud
 
@@ -63,6 +64,28 @@ if __name__ == '__main__':
         print(song_info['name'], 'by', song_info['artists'][0]['name'])
         
     # Visualize the number of songs added each year to my saved songs
-    # Bar chart, each bar having multiple colors to signify genre
+    added_years = [int(dct['added_at'][:4]) for dct in saved_songs]
+    year_freqs = Counter(added_years)
+    plt.bar(year_freqs.keys(), year_freqs.values())
+    # API does not provide a genre for a song, but you can get it for artist
+    # and create stack bar chart using artist genres
 
-
+    # Visualize the frequency of release years in my saved songs
+    release_years = [int(dct['track']['album']['release_date'][:4]) for dct in saved_songs if \
+                     int(dct['track']['album']['release_date'][:4]) != 0]
+    release_freqs = Counter(release_years)
+    plt.bar(release_freqs.keys(), release_freqs.values())
+    
+    # Get the oldest and newest songs in saved songs
+    oldest_song = [i for i, item in enumerate(release_years) if item == min(release_years)]
+    newest_song = [i for i, item in enumerate(release_years) if item == max(release_years)]
+    print('\nOldest Song(s) in Saved Songs:')
+    for i in oldest_song:
+        song_info = saved_songs[i]['track']
+        print(song_info['name'], 'by', song_info['artists'][0]['name'] + f', released in {release_years[i]}')
+    print('\nNewest Song(s) in Saved Songs:')
+    for i in newest_song:
+        song_info = saved_songs[i]['track']
+        print(song_info['name'], 'by', song_info['artists'][0]['name'] + f', released in {release_years[i]}')
+    # make more granular - month, day    
+        
